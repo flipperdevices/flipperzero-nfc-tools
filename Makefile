@@ -1,11 +1,11 @@
 
 TARGET = mfkey
-PATH = mfkey32v2
-CRAPTO1_PATH = $(PATH)/crapto1
+MFKEY_DIR = mfkey32v2
+CRAPTO1_DIR = $(MFKEY_DIR)/crapto1
 
-SRC = $(wildcard $(PATH)/*.c)
-SRC += $(wildcard $(CRAPTO1_PATH)/*.c)
-INC = -I$(PATH) -I$(CRAPTO1_PATH)
+SRC = $(wildcard $(MFKEY_DIR)/*.c)
+SRC += $(wildcard $(CRAPTO1_DIR)/*.c)
+INC = -I$(MFKEY_DIR) -I$(CRAPTO1_DIR)
 
 CC = gcc
 LD = gcc
