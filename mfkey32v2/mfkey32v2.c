@@ -17,9 +17,11 @@ int main(int argc, char *argv[]) {
     uint32_t ar1_enc; // second encrypted reader response
     uint32_t ks2;     // keystream used to encrypt reader response
 
+#ifdef DEBUG
     printf("MIFARE Classic key recovery - based 32 bits of keystream  VERSION2\n");
     printf("Recover key from two 32-bit reader authentication answers only\n");
     printf("This version implements Moebius two different nonce solution (like the supercard)\n\n");
+#endif
 
     if (argc < 8) {
         printf("syntax: %s <uid> <nt> <nr_0> <ar_0> <nt1> <nr_1> <ar_1>\n\n", argv[0]);
@@ -34,6 +36,7 @@ int main(int argc, char *argv[]) {
     sscanf(argv[6], "%x", &nr1_enc);
     sscanf(argv[7], "%x", &ar1_enc);
 
+#ifdef DEBUG
     printf("Recovering key for:\n");
     printf("    uid: %08x\n", uid);
     printf("   nt_0: %08x\n", nt0);
@@ -45,16 +48,21 @@ int main(int argc, char *argv[]) {
 
     // Generate lfsr successors of the tag challenge
     printf("\nLFSR successors of the tag challenge:\n");
+#endif
     uint32_t p64 = prng_successor(nt0, 64);
     uint32_t p64b = prng_successor(nt1, 64);
 
+#ifdef DEBUG
     printf("  nt': %08x\n", p64);
     printf(" nt'': %08x\n", prng_successor(p64, 32));
+#endif
 
     // Extract the keystream from the messages
-    printf("\nKeystream used to generate {ar} and {at}:\n");
     ks2 = ar0_enc ^ p64;
+#ifdef DEBUG
+    printf("\nKeystream used to generate {ar} and {at}:\n");
     printf("  ks2: %08x\n", ks2);
+#endif
 
     s = lfsr_recovery32(ar0_enc ^ p64, 0);
 
@@ -67,7 +75,11 @@ int main(int argc, char *argv[]) {
         crypto1_word(t, uid ^ nt1, 0);
         crypto1_word(t, nr1_enc, 1);
         if (ar1_enc == (crypto1_word(t, 0, 0) ^ p64b)) {
+#ifdef DEBUG
             printf("\nFound Key: [%012" PRIx64 "]\n\n", key);
+#else
+            printf("%012" PRIx64 , key);
+#endif
             break;
         }
     }

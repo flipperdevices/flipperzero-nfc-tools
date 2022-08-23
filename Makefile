@@ -14,6 +14,11 @@ SIZE = gcc-size
 CFLAGS =
 LDFLAGS =
 
+ifeq ($(DEBUG), 1)
+	CFLAGS += -DDEBUG
+endif
+
+
 all:
 	$(CC) $(SRC) $(CFLAGS) -o $(TARGET) 
 
